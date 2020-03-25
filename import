@@ -24,3 +24,6 @@ do
     echo "Removing downloaded file $file"
     rm $file
 done
+
+echo "Running cleanups"
+cat cleanup.cypher | cypher-shell

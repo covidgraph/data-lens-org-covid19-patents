@@ -15,3 +15,6 @@ match (p:Patent) where not p.Applicants is null foreach (applicant in p.Applican
 
 return "Connecting referencing patents";
 match (p0:Patent) where size(p0.NPLResolvedLensIDs) > 0 match (p1:Patent) where p1.LensID in p0.NPLResolvedLensIDs merge (p0)-[:REFERENCES]->(p1);
+
+// create fulltext index
+call db.index.fulltext.createNodeIndex("patents",["PatentTitle","PatentDescription","PatentAbstract","PatentClaim"],["text"]);

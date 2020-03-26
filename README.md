@@ -25,7 +25,7 @@ to add abstracts, claims and descriptions as fulltext to the existing patents.
 Using
 
 ```
-call db.index.fulltext.queryNodes("patents","Corona") yield node,score match (node)--(p:Patent) return p.LensID,p.Title,labels(node)[0],score order by score desc limit 10
+call db.index.fulltext.queryNodes("patents","Corona") yield node,score match (node)--(p:Patent) return p.LensID,p.Title,labels(node)[0],node.lang,score order by score desc limit 10
 ```
 
-Returns all patents where in the title, abstract, claim or description the term "Corona" was found.
+Returns all patents where in the title, abstract, claim or description the term "Corona" was found. Result contains the Patent LensID, the title, the part where the word was found, the language of that part and the score.

@@ -2,6 +2,7 @@
 
 # Importer for CSV data from Lens.org
 # Written by Darko Krizic (darko@krizic.net)
+cs=cypher-shell -a bolt://neo4j:CureCorona82@covid.petesis.com:7687
 
 CSVS="https://lens-public.s3.us-west-2.amazonaws.com/coronavirus/patent/export/Coronavirus-broad-keywords-based-patents.csv https://lens-public.s3.us-west-2.amazonaws.com/coronavirus/patent/export/Coronavirus-patents-SARS-MERS.csv https://lens-public.s3.us-west-2.amazonaws.com/coronavirus/patent/export/Coronavirus-patents-SARS-MERS-TAC.csv https://lens-public.s3.us-west-2.amazonaws.com/coronavirus/patent/export/Coronavirus-limited-keywords-based-patents.csv https://lens-public.s3.us-west-2.amazonaws.com/coronavirus/patent/export/Coronavirus-CPC-based-patents.csv https://lens-public.s3.us-west-2.amazonaws.com/coronavirus/patent/export/Coronavirus-declared-patseq-organism.csv https://lens-public.s3.us-west-2.amazonaws.com/coronavirus/patent/export/Coronavirus-SARS-patents.csv https://lens-public.s3.us-west-2.amazonaws.com/coronavirus/patent/export/Coronavirus-MERS-patents.csv https://lens-public.s3.us-west-2.amazonaws.com/coronavirus/patent/export/Coronavirus-SARS-diagnosis-patents.csv https://lens-public.s3.us-west-2.amazonaws.com/coronavirus/patent/export/Coronavirus-MERS-diagnosis-patents.csv https://lens-public.s3.us-west-2.amazonaws.com/coronavirus/patent/export/Coronavirus-SARS-treatment.csv https://lens-public.s3.us-west-2.amazonaws.com/coronavirus/patent/export/Coronavirus-MERS-treatment.csv https://lens-public.s3.us-west-2.amazonaws.com/coronavirus/patent/export/Ventilators.csv"
 test ! -d csv && mkdir csv
@@ -20,7 +21,7 @@ do
     echo "Prepareing file $file for import"
 	sed -e '1s/"\#"/ID/' -e '1s/[\(\) ]//g' $file >patents.csv
 	echo "Importing file patents.csv"
-	cat ../merge.cypher | sed -e "s#file:import/#file:$path/#g" | cypher-shell
+	cat ../merge.cypher | sed -e "s#file:import/#file:$path/#g" | $cs
     echo "Removing import file"
     rm patents.csv
     echo "Removing downloaded file $file"
@@ -28,6 +29,6 @@ do
 done
 
 echo "Running cleanups"
-cat ../cleanup.cypher | cypher-shell
+cat ../cleanup.cypher | $cs
 cd ..
 rm -rf csv

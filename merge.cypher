@@ -1,6 +1,6 @@
 return "Creading indizes";
 create index on :Patent(ID);
-create index on :Person(id);
+create index on :Entity(id);
 create index on :Kind(id);
 create index on :Type(id);
 
@@ -16,7 +16,7 @@ load csv with headers from "file:import/patents.csv" as line
 		p.PublicationYear = toInt(line.PublicationYear),
 		p.ApplicationNumber = line.ApplicationNumber,
 		p.ApplicationDate = date(line.ApplicationDate),
-		p.PriorityNumbers = line.PriorityNumbers,
+		p.PriorityNumbers = split(line.PriorityNumbers, ";;"),
 		p.EarliestPriorityDate = date(line.EarliestPriorityDate),
 		p.Title = line.Title,
 		p.Applicants = split(line.Applicants,";;"),
@@ -35,6 +35,6 @@ load csv with headers from "file:import/patents.csv" as line
 		p.NPLCitationCount = toInt(line.NPLCitationCount),
 		p.NPLResolvedCitationCount = toInt(line.NPLResolvedCitationCount),
 		p.NPLResolvedLensIDs = split(line.NPLResolvedLensIDs, ";;"),
-		p.NPLResolvedExternalIds = line.NPLResolvedExternalIds,
-		p.NPLCitations = line.NPLCitations
+		p.NPLResolvedExternalIds = split(line.NPLResolvedExternalIds,";;"),
+		p.NPLCitations = split(line.NPLCitations,";;")
 ;

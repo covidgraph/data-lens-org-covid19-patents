@@ -5,7 +5,7 @@ create index on :Kind(id);
 create index on :Type(id);
 
 return "Loading patents";
-load csv with headers from "file:import/patents.csv" as line
+load csv with headers from "file:///patents.csv" as line
     merge (p:Patent {ID:toInt(line.ID)})
     set 
 		p.Jurisdiction = line.Jurisdiction,

@@ -1,6 +1,6 @@
 #!/bin/bash
 file=$1
-cs=cypher-shell -a bolt://neo4j:CureCorona82@covid.petesis.com:7687
+cs="cypher-shell $CYPHER_SHELL_PARAM"
 if [ ! -f $file ]
 then
 	echo "ERROR: $file not found"
@@ -8,11 +8,11 @@ then
 fi
 lens_id=$(cat $file | jq '.bibliographic_data.lens_id' | sed -e 's/"//g')
 family_id=$(cat $file | jq '.bibliographic_data.family.simple.family_id' | sed -e 's/"//g')
-title0=$(cat $file | jq '.bibliographic_data.title[0].text' | sed -e 's/"//g')
+title0=$(cat $file | jq '.bibliographic_data.title[0].text' | sed -e 's/"//g' -e 's/\\/\\\\/g')
 title0_lang=$(cat $file | jq '.bibliographic_data.title[0].lang' | sed -e 's/"//g')
-title1=$(cat $file | jq '.bibliographic_data.title[1].text' | sed -e 's/"//g')
+title1=$(cat $file | jq '.bibliographic_data.title[1].text' | sed -e 's/"//g' -e 's/\\/\\\\/g')
 title1_lang=$(cat $file | jq '.bibliographic_data.title[1].lang' | sed -e 's/"//g')
-title2=$(cat $file | jq '.bibliographic_data.title[2].text' | sed -e 's/"//g')
+title2=$(cat $file | jq '.bibliographic_data.title[2].text' | sed -e 's/"//g' -e 's/\\/\\\\/g')
 title2_lang=$(cat $file | jq '.bibliographic_data.title[2].lang' | sed -e 's/"//g')
 abstract0=$(cat $file | jq '.abstract[0].text' | sed -e 's/"//g' -e 's/\\/\\\\/g')
 abstract0_lang=$(cat $file | jq '.abstract[0].lang' | sed -e 's/"//g')
@@ -40,7 +40,7 @@ echo "lens_id=$lens_id"
 #echo "claim0=$abstract"
 #echo "description0_lang=$description_lang"
 #echo "description0=$description"
-command="match (p:Patent {LensID:\"$lens_id\"})"
+command="match (p:Patent {LensID:\"$lens_id\"}) optional match (p)-[r]->(pt:PatentTitle) with p,count(r) as rc where rc = 0 "
 if [ ! "$family_id" = "null" ]
 then
 	command="$command merge (pf:PatentFamily {id:\"$family_id\"}) merge (p)-[:MEMBER_OF]->(pf)" 

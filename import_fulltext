@@ -25,7 +25,7 @@ do
 	do
 		((i=i%30))
 		((i++==0)) && wait
-                $base/import_from_json $json &
+                $base/import_json $json &
 	done
     )	
     echo "Deleting downloaded file $file"

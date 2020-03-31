@@ -1,14 +1,16 @@
 Requirements
 
 * A locally running Neo4j
-* cypher-shell is installed
+* Command line tool "cypher-shell" is installed
+* Command line tool "jq" (for handling JSON)
+* Environment variable "CYPHER_SHELL_PARAM" is defined (e.g. "-a bolt://username:password@localhost:7687")
 * Access to the internet, all source data is downloaded directly
-* About 2GB of available disk space
+* About 3GB of available disk space
 
 Run
 
 ```
-./import_patents
+./import_fulltext
 ```
 
 to import all patents. This runs a few minutes. The result is that about 16K patents are imported, but only core data.

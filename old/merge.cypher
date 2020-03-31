@@ -36,5 +36,6 @@ load csv with headers from "file:///patents.csv" as line
 		p.NPLResolvedCitationCount = toInt(line.NPLResolvedCitationCount),
 		p.NPLResolvedLensIDs = split(line.NPLResolvedLensIDs, ";;"),
 		p.NPLResolvedExternalIds = split(line.NPLResolvedExternalIds,";;"),
-		p.NPLCitations = split(line.NPLCitations,";;")
+		p.NPLCitations = split(line.NPLCitations,";;"),
+                p.Origin = "csv"
 ;

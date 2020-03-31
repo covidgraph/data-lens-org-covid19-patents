@@ -16,11 +16,11 @@ do
 	wget $url
     fi
     echo "Unzipping file $zipfile"
-    unzip -o $zipfile
+    unzip -q -o $zipfile
     (
     	cd $file
 	cwd=$(pwd)
-	find . -name "*.json.zip" | xargs -n1 unzip -o 
+	find . -name "*.json.zip" | xargs -n1 unzip -q -o 
 	find . -name "*.json" | xargs -n1 | while read json
 	do
 		((i=i%30))
@@ -31,3 +31,5 @@ do
     echo "Deleting downloaded file $file"
     #rm $file
 done
+
+echo fulltext.cypher | cypher-shell $CYPHER_SHELL_PARAM

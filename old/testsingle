@@ -1,0 +1,2 @@
+#!/bin/bash
+./import_json ./zip/Coronavirus-declared-patseq-organism/196-551-887-127-511.json

@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 file=$1
 if [ ! -f $file ]
 then
@@ -93,4 +94,4 @@ then
 	command="$command merge (d2:PatentDescription {id:\"$lens_id-d-$description2_lang\"}) set d2.lang=\"$description2_lang\", d2.text=\"$description2\" merge (p)-[:HAS_DESCRIPTION]->(d2)" 
 fi
 command="$command return p;"
-echo "$command" | cypher-shell
+echo "$command" | cypher-shell -a $GC_NEO4J_URL

@@ -1,11 +1,12 @@
 #!/bin/bash
+set -e
 URLS="https://lens-public.s3.us-west-2.amazonaws.com/coronavirus/patent/fulltext/Coronavirus-broad-keyword-based-patents.zip https://lens-public.s3.us-west-2.amazonaws.com/coronavirus/patent/fulltext/Coronavirus-patents-SARS-and-MERS.zip https://lens-public.s3.us-west-2.amazonaws.com/coronavirus/patent/fulltext/Coronavirus-patents-SARS-and-MERS-TAC.zip https://lens-public.s3.us-west-2.amazonaws.com/coronavirus/patent/fulltext/Coronavirus-limited-keywords-based-patents.zip https://lens-public.s3.us-west-2.amazonaws.com/coronavirus/patent/fulltext/Coronavirus-CPC-based-patents.zip https://lens-public.s3.us-west-2.amazonaws.com/coronavirus/patent/fulltext/Coronavirus-declared-patseq-organism.zip https://lens-public.s3.us-west-2.amazonaws.com/coronavirus/patent/fulltext/Coronavirus-SARS-patents.zip https://lens-public.s3.us-west-2.amazonaws.com/coronavirus/patent/fulltext/Coronavirus-MERS-patents.zip https://lens-public.s3.us-west-2.amazonaws.com/coronavirus/patent/fulltext/Coronavirus-SARS-diagnosis-patents.zip https://lens-public.s3.us-west-2.amazonaws.com/coronavirus/patent/fulltext/Coronavirus-MERS-diagnosis-patents.zip https://lens-public.s3.us-west-2.amazonaws.com/coronavirus/patent/fulltext/Coronavirus-SARS-treatment.zip https://lens-public.s3.us-west-2.amazonaws.com/coronavirus/patent/fulltext/Coronavirus-MERS-treatment.zip https://lens-public.s3.us-west-2.amazonaws.com/coronavirus/patent/fulltext/Ventilators.zip https://lens-public.s3.us-west-2.amazonaws.com/coronavirus/patent/fulltext/Ventilators.zip"
 [ ! -d zip ] && mkdir zip
 base=$(pwd)
 cd zip
 for url in $URLS
 do
-	echo "Imporing fulltext from $url"
+	echo "Importing fulltext from $url"
 	zipfile=$(basename $url)
     file=$(basename $zipfile .zip)
     if [ -f $zipfile ]

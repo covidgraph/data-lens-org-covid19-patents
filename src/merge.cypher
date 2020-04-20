@@ -1,19 +1,12 @@
-return "Creading indizes";
-create index on :Patent(ID);
-create index on :Entity(id);
-create index on :Kind(id);
-create index on :Type(id);
-
-return "Loading patents";
-load csv with headers from "file:import/patents.csv" as line
-    merge (p:Patent {ID:toInt(line.ID)})
+load csv with headers from $FILEURL as line
+    merge (p:Patent {ID:toInteger(line.ID)})
     set 
 		p.Jurisdiction = line.Jurisdiction,
 		p.Kind = line.Kind,
 		p.PublicationNumber = line.PublicationNumber,
 		p.LensID = line.LensID,
 		p.PublicationDate = date(line.PublicationDate),
-		p.PublicationYear = toInt(line.PublicationYear),
+		p.PublicationYear = toInteger(line.PublicationYear),
 		p.ApplicationNumber = line.ApplicationNumber,
 		p.ApplicationDate = date(line.ApplicationDate),
 		p.PriorityNumbers = split(line.PriorityNumbers, ";;"),
@@ -25,15 +18,15 @@ load csv with headers from "file:import/patents.csv" as line
 		p.URL = line.URL,
 		p.Type = line.Type,
 		p.HasFullText = (case line.HasFullText when "yes" then true else false end),
-		p.CitedbyPatentCount = toInt(line.CitedbyPatentCount),
-		p.SimpleFamilySize = toInt(line.SimpleFamilySize),
-		p.ExtendedFamilySize = toInt(line.ExtendedFamilySize),
-		p.SequenceCount = toInt(line.SequenceCount),
+		p.CitedbyPatentCount = toInteger(line.CitedbyPatentCount),
+		p.SimpleFamilySize = toInteger(line.SimpleFamilySize),
+		p.ExtendedFamilySize = toInteger(line.ExtendedFamilySize),
+		p.SequenceCount = toInteger(line.SequenceCount),
 		p.CPCClassifications = split(line.CPCClassifications,";;"),
 		p.IPCRClassifications = split(line.IPCRClassifications,";;"),
 		p.USClassifications = split(line.USClassifications,";;"),
-		p.NPLCitationCount = toInt(line.NPLCitationCount),
-		p.NPLResolvedCitationCount = toInt(line.NPLResolvedCitationCount),
+		p.NPLCitationCount = toInteger(line.NPLCitationCount),
+		p.NPLResolvedCitationCount = toInteger(line.NPLResolvedCitationCount),
 		p.NPLResolvedLensIDs = split(line.NPLResolvedLensIDs, ";;"),
 		p.NPLResolvedExternalIds = split(line.NPLResolvedExternalIds,";;"),
 		p.NPLCitations = split(line.NPLCitations,";;")

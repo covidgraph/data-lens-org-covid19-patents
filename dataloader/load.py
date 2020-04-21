@@ -32,7 +32,7 @@ class PatentLoader(object):
             json_data = None
             with open(file_path) as json_file:
                 json_data = json.load(json_file)
-            self.loader.load_json(json_data)
+            self.loader.load_json(json_data, "Patent")
         log.info(
             "  Load next {} json files into neo4j@{}".format(
                 len(json_file_path_list), config.GC_NEO4J_URL

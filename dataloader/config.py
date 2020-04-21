@@ -57,6 +57,7 @@ class DEFAULT(ConfigBase):
         "Collection_PatentLiteratureCitation": "PatentCitations",
         "family_extended": {"Family": {"type": "extended"}},
         "family_simple": {"Family": {"type": "simple"}},
+        "lens_id": "LensID",
     }
     JSON2GRAPH_COLLECTION_ANCHOR_EXTRA_LABELS = []
 
@@ -85,12 +86,19 @@ class DEFAULT(ConfigBase):
     }
 
     JSON2GRAPH_PROPERTY_NAME_OVERRIDE = {
-        "Entity": {"inventor": "name", "owner": "name", "applicant": "name"}
+        "Entity": {"inventor": "name", "owner": "name", "applicant": "name"},
+        "LensID": {"lens_id": "id"},
     }
 
     JSON2GRAPH_RELTYPE_OVERRIDE = {}
 
-    JSON2GRAPH_INTERFOLD_JSON_ATTR = {"bibliographic_data": ["family"]}
+    # merge/pull-up attr of family into bibliographic_data and attrs of bibliographic_data into patent
+    JSON2GRAPH_INTERFOLD_JSON_ATTR = {
+        "Patent": {
+            "bibliographic_data": {"combine_attr_names": False},
+            "family": {"combine_attr_names": True},
+        },
+    }
 
 
 class DEV(ConfigBase):

@@ -77,4 +77,4 @@ run the main.py
 
 ## Scheme
 
-![Datascheme](https://raw.githubusercontent.com/covidgraph/data_lens-org-covid19-patents/master/docs/datascheme.png)
+![Datascheme](https://github.com/covidgraph/data-lens-org-covid19-patents/blob/master/docs/datascheme.png)

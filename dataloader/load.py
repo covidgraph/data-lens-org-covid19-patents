@@ -53,7 +53,7 @@ class PatentLoader(object):
                 config.JSON2GRAPH_COLLECTION_ANCHOR_EXTRA_LABELS
             )
             self._loader.config_str_collection_anchor_label = (
-                "Collection_{LIST_MEMBER_LABEL}"
+                "{LIST_MEMBER_LABEL}Collection"
             )
             self._loader.config_bool_capitalize_labels = False
             self._loader.config_dict_label_override = config.JSON2GRAPH_LABEL_OVERRIDE
@@ -64,8 +64,12 @@ class PatentLoader(object):
                 config.JSON2GRAPH_PROPERTY_NAME_OVERRIDE
             )
             self._loader.config_list_default_primarykeys = config.JSON2GRAPH_DEFAULT_IDS
-            # self._loader.config_dict_primarykey_attr_by_label = {"Patent": "lens_id"}
-            self._loader.config_dict_property_to_extra_node = {"Patent": ["lens_id"]}
+            self._loader.config_dict_primarykey_attr_by_label = (
+                config.JSON2GRAPH_PRIMARYKEY_ATTR_BY_LABEL
+            )
+            self._loader.config_dict_property_to_extra_node = (
+                config.JSON2GRAPH_PROPERTY_TO_EXTRA_NODE
+            )
             # self._loader.config_dict_primarykey_attr_by_label = None
             self._loader.config_dict_primarykey_generated_hashed_attrs_by_label = (
                 config.JSON2GRAPH_PRIMARYKEY_GENERATED_HASHED_ATTRS_BY_LABEL
@@ -83,6 +87,9 @@ class PatentLoader(object):
 
             self._loader.config_dict_interfold_json_attr = (
                 config.JSON2GRAPH_INTERFOLD_JSON_ATTR
+            )
+            self._loader.config_list_drop_reltypes = (
+                config.JSON2GRAPH_LIST_DROP_RELTYPES
             )
 
             self._loader.config_graphio_batch_size = config.COMMIT_INTERVAL
@@ -105,10 +112,26 @@ class PatentLoader(object):
         cls(batch)
 
 
-def load():
-    for d in os.listdir(config.DATASET_BASE_DIR):
+def post_process():
+    for query in config.POST_PROCESS_QUERIES:
+        log.info("Run postprocess querie: '{}'".format(query))
+        try:
+            get_graph().run(query)
+        except py2neo.database.ClientError as e:
+            if not e.code == "Neo.ClientError.Schema.IndexAlreadyExists":
+                raise e
+            else:
+                pass
 
-        PatentLoader.load_dir(os.path.join(config.DATASET_BASE_DIR, d))
+
+def load():
+    PatentLoader.load_dir(
+        os.path.join(config.DATASET_BASE_DIR, "Coronavirus-MERS-diagnosis-patents")
+    )
+    # for d in os.listdir(config.DATASET_BASE_DIR):
+    #    PatentLoader.load_dir(os.path.join(config.DATASET_BASE_DIR, d))
+    log.info("Run Postprocess queries...")
+    post_process()
 
 
 if __name__ == "__main__":

@@ -1,35 +1,80 @@
-Requirements
+# Covid-Patents Data loader
 
-* A locally running Neo4j
-* cypher-shell is installed
-* Access to the internet, all source data is downloaded directly
-* About 2GB of available disk space
+This python script helps to transform the data set from the [Lens.org Covid19 Patent Dataset](https://about.lens.org/covid-19/)
+into a neo4j graph
 
-Run
+Maintainer: [Tim](https://github.com/motey)
 
+Version: 0.0.1
+
+Python version: Python3
+
+# Usage
+
+## Docker
+
+**Run**
+
+`docker run -it --rm --name data-lens-org-covid19-patents -e GC_NEO4J_URL="bolt://${HOSTNAME}:7687" covidgraph/data-lens-org-covid19-patents`
+
+**Build local image**
+
+From the root directorie of this repo run:
+
+`docker build -t data-lens-org-covid19-patents .`
+
+**Run local image**
+
+Examples (neo4j runs on the docker linux host machine)
+
+`docker run -it --rm --name data-lens-org-covid19-patents -v ${PWD}/dataset:/app/dataset -e GC_NEO4J_URL="bolt://${HOSTNAME}:7687" data-lens-org-covid19-patents`
+
+**Envs**
+
+The most important Env variables are:
+
+`ENV`: will be `PROD` or `DEV`
+
+`GC_NEO4J_URL`: The full bolt url example 'bolt://myneo4jhostname:7687'
+
+`GC_NEO4J_USER`: The neo4j user
+
+`GC_NEO4J_PASSWORD`: The neo4j password
+
+besides that you can set all variables in dataloader/config.py via env variable with a `CONFIGS_` prefix. See https://git.connect.dzd-ev.de/dzdtools/pythonmodules/-/tree/master/Configs for more details
+
+**Volumes**
+
+`/app/dataset`
+
+Here is the downloaded data set located. You can mount this path with `-v /mylocal/path:/app/dataset` to prevent redownloading of the dataset.
+
+`/app/dataloader`
+
+Here is the python source code located. You can mount this for development or tinkering
+
+## Local
+
+Copy `dataloader/env/DEFAULT.env` to `dataloader/env/DEVELOPMENT.env`:
+
+`cp dataloader/env/DEFAULT.env dataloader/env/DEVELOPMENT.env`
+
+Enter your neo4j connection string at `dataloader/env/DEVELOPMENT.env` into the variable `CONFIGS_NEO4J_CON`:
+
+```env
+GC_NEO4J_URL='bolt://myuser:mypasswd@localhost:7687'
 ```
-./import_patents
-```
 
-to import all patents. This runs a few minutes. The result is that about 16K patents are imported, but only core data.
+Install the requirements with
 
+`pip3 install -r requirement.txt`
 
-Run
+run the main.py
 
-```
-./import_fulltext
-```
+`python3 main.py`
 
-to add abstracts, claims and descriptions as fulltext to the existing patents.
+# Data
 
-Using
+## Scheme
 
-```
-call db.index.fulltext.queryNodes("patents","covid and disease and infection") yield node,score match (node)--(p:Patent) return distinct(p.LensID),p.Title,labels(node)[0],node.lang,score order by score desc limit 10
-```
-
-Returns all patents where in the title, abstract, claim or description the term "Corona" was found. Result contains the Patent LensID, the title, the part where the word was found, the language of that part and the score.
-
-```
-call db.index.fulltext.queryNodes("patents","corona and protection and infection") yield node,score match (node)--(p:Patent)--(pt:PatentTitle),(p)--(pa:PatentAbstract) return distinct(p.LensID) as patent_id,collect(pt.text) as titles,collect(pa.text) as abstracts, labels(node)[0] as location ,node.lang as language ,score as score order by score desc limit 10
-```
+![Datascheme](https://raw.githubusercontent.com/covidgraph/data_lens-org-covid19-patents/master/docs/datascheme.png)

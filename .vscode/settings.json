@@ -1,0 +1,8 @@
+{
+    "python.formatting.provider": "black",
+    "python.pythonPath": "/usr/bin/python3.7",
+    "files.watcherExclude": {
+        "**/dataset/**": true,
+    }
+
+}

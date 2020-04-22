@@ -14,9 +14,20 @@ class DEFAULT(ConfigBase):
     COMMIT_INTERVAL = 10000
 
     LOG_LEVEL = "INFO"
-    GC_NEO4J_URL = "localhost"
-    GC_NEO4J_USER = None
-    GC_NEO4J_PASSWORD = None
+    if "GC_NEO4J_URL" in os.environ:
+        GC_NEO4J_URL = os.environ["GC_NEO4J_URL"]
+    else:
+        GC_NEO4J_URL = "localhost"
+
+    if "GC_NEO4J_USER" in os.environ:
+        GC_NEO4J_USER = os.environ["GC_NEO4J_USER"]
+    else:
+        GC_NEO4J_USER = None
+
+    if "GC_NEO4J_PASSWORD" in os.environ:
+        GC_NEO4J_PASSWORD = os.environ["GC_NEO4J_PASSWORD"]
+    else:
+        GC_NEO4J_PASSWORD = None
 
     # if set to True, the dataset will always be downloaded, regardless of its allready existing
     REDOWNLOAD_DATASET_IF_EXISTENT = False
@@ -125,13 +136,13 @@ class DEFAULT(ConfigBase):
     ]
 
 
-class DEV(ConfigBase):
+class DEV(DEFAULT):
     pass
 
 
-class PROD(ConfigBase):
+class PROD(DEFAULT):
     pass
 
 
-class LOCAL(ConfigBase):
+class LOCAL(DEFAULT):
     pass

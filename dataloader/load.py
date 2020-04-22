@@ -124,15 +124,12 @@ def post_process():
                 pass
 
 
-def load():
-    PatentLoader.load_dir(
-        os.path.join(config.DATASET_BASE_DIR, "Coronavirus-MERS-diagnosis-patents")
-    )
-    # for d in os.listdir(config.DATASET_BASE_DIR):
-    #    PatentLoader.load_dir(os.path.join(config.DATASET_BASE_DIR, d))
+def load_data():
+    for d in os.listdir(config.DATASET_BASE_DIR):
+        PatentLoader.load_dir(os.path.join(config.DATASET_BASE_DIR, d))
     log.info("Run Postprocess queries...")
     post_process()
 
 
 if __name__ == "__main__":
-    load()
+    load_data()

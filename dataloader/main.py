@@ -23,7 +23,7 @@ if __name__ == "__main__":
     config = getConfig()
     log.info(
         "Start with loglevel '{}' and ENV={}".format(
-            config.LOG_LEVEL, os.environ["ENV"]
+            config.LOG_LEVEL, os.environ["ENV"] if "ENV" in os.environ else "DEV"
         )
     )
     with CodeTimer("Downloader", unit="s"):

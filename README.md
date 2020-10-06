@@ -7,7 +7,7 @@ This script usually runs in context of the [Covid*Graph](https://covidgraph.org/
 
 Maintainer: [Tim](https://github.com/motey)
 
-Version: 0.0.1
+Version: 1.0.0
 
 Python version: Python3
 

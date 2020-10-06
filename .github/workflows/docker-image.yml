@@ -14,7 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build . --file dockerfile --tag data-lens-org-covid19-patents:latest
+      run: docker build . --file Dockerfile --tag data-lens-org-covid19-patents:latest
     - name: Publish to Registry
       uses: HurricanKai/Publish-Docker-Github-Action@master
       with:

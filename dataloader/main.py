@@ -17,7 +17,7 @@ if __name__ == "__main__":
     sys.path.append(os.path.normpath(SCRIPT_DIR))
 
 from dataloader.download import download
-from dataloader.load import load_data
+from dataloader.load import load_data, get_graph
 
 if __name__ == "__main__":
     config = getConfig()
@@ -26,6 +26,9 @@ if __name__ == "__main__":
             config.LOG_LEVEL, os.environ["ENV"] if "ENV" in os.environ else "DEV"
         )
     )
+    log.info("Test DB connection ({})...".format(config.NEO4J))
+    get_graph().run("MATCH (n) return n limit 1")
+    log.info("...DB is reachable") 
     with CodeTimer("Downloader", unit="s"):
         download()
     with CodeTimer("Importer", unit="s"):

@@ -12,16 +12,7 @@ log.setLevel(getattr(logging, config.LOG_LEVEL))
 
 
 def get_graph():
-
-    if config.GC_NEO4J_USER is not None:
-        return py2neo.Graph(
-            config.GC_NEO4J_URL,
-            password=config.GC_NEO4J_PASSWORD,
-            user=config.GC_NEO4J_USER,
-        )
-    else:
-        return py2neo.Graph(config.GC_NEO4J_URL)
-
+    return py2neo.Graph(**config.NEO4J)
 
 class PatentLoader(object):
     _loader = None
@@ -34,8 +25,8 @@ class PatentLoader(object):
                 json_data = json.load(json_file)
             self.loader.load_json(json_data, "Patent")
         log.info(
-            "  Load next {} json files into neo4j@{}".format(
-                len(json_file_path_list), config.GC_NEO4J_URL
+            "  Load next {} json files into neo4j".format(
+                len(json_file_path_list)
             )
         )
         self.loader.create_indexes(get_graph())

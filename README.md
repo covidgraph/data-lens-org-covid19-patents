@@ -17,7 +17,7 @@ Python version: Python3
 
 **Run**
 
-`docker run -it --rm --name data-lens-org-covid19-patents -e CONFIGS_NEO4J={"host":"localhost"} covidgraph/data-lens-org-covid19-patents`
+`docker run -it --rm --name data-lens-org-covid19-patents -e CONFIGS_NEO4J='{"host":"localhost"}' covidgraph/data-lens-org-covid19-patents`
 
 > **NOTE**: For details on the `-e CONFIGS_NEO4J`env variable see https://github.com/covidgraph/motherlode/blob/master/README.md#the-neo4j-connection-string
 
@@ -31,7 +31,7 @@ From the root directorie of this repo run:
 
 Examples (neo4j runs on the docker linux host machine)
 
-`docker run -it --rm --name data-lens-org-covid19-patents -v ${PWD}/dataset:/app/dataset -e CONFIGS_NEO4J={"host":"localhost"} data-lens-org-covid19-patents`
+`docker run -it --rm --name data-lens-org-covid19-patents -v ${PWD}/dataset:/app/dataset -e CONFIGS_NEO4J='{"host":"localhost"}' data-lens-org-covid19-patents`
 
 **Envs**
 
@@ -39,7 +39,7 @@ The most important Env variables are:
 
 `ENV`: will be `PROD` or `DEV`
 
-`CONFIGS_NEO4J`: The connections details for the database. For details see https://github.com/covidgraph/motherlode/blob/master/README.md#the-neo4j-connection-string
+`CONFIGS_NEO4J`: defaults to `{"host":"localhost"}`. The connections details for the database. For details see https://github.com/covidgraph/motherlode/blob/master/README.md#the-neo4j-connection-string
 
 besides that you can set all variables in `dataloader/config.py` via env variable with a `CONFIGS_` prefix. See https://git.connect.dzd-ev.de/dzdtools/pythonmodules/-/tree/master/Configs for more details on how to manipulate the parameters
 

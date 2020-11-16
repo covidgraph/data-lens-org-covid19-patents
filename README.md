@@ -31,7 +31,7 @@ From the root directorie of this repo run:
 
 Examples (neo4j runs on the docker linux host machine)
 
-`docker run -it --rm --name data-lens-org-covid19-patents -v ${PWD}/dataset:/app/dataset -e CONFIGS_NEO4J='{"host":"localhost"}' data-lens-org-covid19-patents`
+`docker run -it --rm --network host --name data-lens-org-covid19-patents -v ${PWD}/dataset:/app/dataset -e CONFIGS_NEO4J='{"host":"localhost"}' data-lens-org-covid19-patents`
 
 **Envs**
 

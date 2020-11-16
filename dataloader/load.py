@@ -16,7 +16,7 @@ def get_graph():
 
 
 class PatentLoader(object):
-    _loader = None
+    _loader: Dict2graph = None
 
     def __init__(self, json_file_path_list: list):
         log.info("  Parse next {} json files".format(len(json_file_path_list)))

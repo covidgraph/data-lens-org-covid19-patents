@@ -2,4 +2,4 @@ py2neo
 linetimer
 requests
 git+https://git.connect.dzd-ev.de/dzdtools/pythonmodules.git#subdirectory=Configs
-git+https://git.connect.dzd-ev.de/dzdtools/pythonmodules.git@legacy-json2graphIO#subdirectory=DZDjson2GraphIO
+git+https://git.connect.dzd-ev.de/dzdtools/pythonmodules.git#subdirectory=dict2graph

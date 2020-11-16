@@ -3,7 +3,7 @@ import json
 import logging
 import py2neo
 from Configs import getConfig
-from DZDjson2GraphIO import Json2graphio
+from dict2graph import Dict2graph
 
 config = getConfig()
 log = logging.getLogger(__name__)
@@ -13,6 +13,7 @@ log.setLevel(getattr(logging, config.LOG_LEVEL))
 
 def get_graph():
     return py2neo.Graph(**config.NEO4J)
+
 
 class PatentLoader(object):
     _loader = None
@@ -25,9 +26,7 @@ class PatentLoader(object):
                 json_data = json.load(json_file)
             self.loader.load_json(json_data, "Patent")
         log.info(
-            "  Load next {} json files into neo4j".format(
-                len(json_file_path_list)
-            )
+            "  Load next {} json files into neo4j".format(len(json_file_path_list))
         )
         self.loader.create_indexes(get_graph())
         self.loader.merge(get_graph())
@@ -36,56 +35,86 @@ class PatentLoader(object):
     def loader(self):
         if self._loader is None:
             # instantiate and configure the Json2graphio loader
-            self._loader = Json2graphio()
-            self._loader.config_list_skip_collection_hubs = (
-                config.JSON2GRAPH_SKIP_COLLECTION_HUBS
-            )
-            self._loader.config_list_collection_anchor_extra_labels = (
-                config.JSON2GRAPH_COLLECTION_ANCHOR_EXTRA_LABELS
-            )
-            self._loader.config_str_collection_anchor_label = (
+            self._loader = Dict2graph()
+            self._loader.config_graphio_batch_size = config.COMMIT_INTERVAL
+            self._loader.config_list_blocklist_collection_hubs = [
+                "PatentTitleCollection",
+                "PatentClaimCollection",
+                "PatentAbstractCollection",
+                "EntityCollection",
+                "PatentDescriptionCollection",
+                "LensIDCollection",
+            ]
+            self._loader.config_list_collection_hub_extra_labels = []
+            self._loader.config_str_collection_hub_label = (
                 "{LIST_MEMBER_LABEL}Collection"
             )
-            self._loader.config_bool_capitalize_labels = False
-            self._loader.config_dict_label_override = config.JSON2GRAPH_LABEL_OVERRIDE
-            self._loader.config_dict_json_attr_to_reltype_instead_of_label = (
-                config.JSON2GRAPH_ATTR_TO_RELTYPE_INSTEAD_OF_LABEL
-            )
-            self._loader.config_dict_property_name_override = (
-                config.JSON2GRAPH_PROPERTY_NAME_OVERRIDE
-            )
-            self._loader.config_list_default_primarykeys = config.JSON2GRAPH_DEFAULT_IDS
-            self._loader.config_dict_primarykey_attr_by_label = (
-                config.JSON2GRAPH_PRIMARYKEY_ATTR_BY_LABEL
-            )
-            self._loader.config_dict_property_to_extra_node = (
-                config.JSON2GRAPH_PROPERTY_TO_EXTRA_NODE
-            )
+            self._loader.config_dict_label_override = {
+                "bibliographic_data": "Patent",
+                "npl_cit": "NonPatentLiteratureCitation",
+                "pat_cit": "PatentLiteratureCitation",
+                "pub_key": "PatentNumber",
+                "claims": "PatentClaim",
+                "description": "PatentDescription",
+                "abstract": "PatentAbstract",
+                "title": "PatentTitle",
+                "NonPatentLiteratureCitationCollection": "PatentCitationCollection",
+                "PatentLiteratureCitationCollection": "PatentCitationCollection",
+                "family_extended": {"PatentFamily": {"type": "extended"}},
+                "family_simple": {"PatentFamily": {"type": "simple"}},
+                "familyextended": {"PatentFamily": {"type": "extended"}},
+                "familysimple": {"PatentFamily": {"type": "simple"}},
+                "lens_id": "LensID",
+                "classification_cpc": "CooperativePatentClassification",
+                "classification_ipc": "InternationalPatentClassification",
+                "classification_us": "USPatentClassification",
+                "CooperativePatentClassificationCollection": "PatentClassificationCollection",
+                "InternationalPatentClassificationCollection": "PatentClassificationCollection",
+                "USPatentClassificationCollection": "PatentClassificationCollection",
+            }
+            self._loader.config_dict_attr_name_to_reltype_instead_of_label = {
+                "inventor": "Entity",
+                "owner": "Entity",
+                "applicant": "Entity",
+            }
+            self._loader.config_dict_property_name_override = {
+                "Entity": {"inventor": "name", "owner": "name", "applicant": "name"},
+                "LensID": {"lens_id": "id"},
+            }
+            self._loader.config_list_default_primarykeys = [
+                "id",
+            ]
+            self._loader.config_dict_primarykey_attr_by_label = {
+                "Patent": ["lens_id"],
+                "Entity": ["name"],
+                "Family": ["family_id"],
+            }
+            self._loader.config_dict_property_to_extra_node = {
+                "Patent": ["lens_id", "pub_key"],
+                "PatentLiteratureCitation": ["pub_key"],
+            }
+
             # self._loader.config_dict_primarykey_attr_by_label = None
-            self._loader.config_dict_primarykey_generated_hashed_attrs_by_label = (
-                config.JSON2GRAPH_PRIMARYKEY_GENERATED_HASHED_ATTRS_BY_LABEL
-            )
+            self._loader.config_dict_primarykey_generated_hashed_attrs_by_label = {
+                "Patent": "AllAttributes",
+                "PatentDescription": ["text"],
+                "PatentClaim": ["text"],
+                "PatentTitle": ["text"],
+                "PatentAbstract": ["text"],
+                "PatentLiteratureCitation": "AllAttributes",
+                "NonPatentLiteratureCitation": "AllAttributes",
+            }
             self._loader.config_str_primarykey_generated_attr_name = "_hash_id"
-            # If set to true, all collections hubs get a second label, named after the list member nodes
-            # self._loader.config_str_collection_anchor_attach_list_members_label = False
-            # self._loader.config_str_collection_relation_postfix = "_COLLECTION"
-            # self._loader.config_bool_collection_anchor_only_when_len_min_2 = False
-            # self._loader.config_func_custom_relation_name_generator = None
-            # self._loader.config_func_label_name_generator_func = None
-            # self._loader.config_dict_concat_list_attr = None
-            # self._loader.config_func_node_post_modifier = None
-            # self._loader.config_func_node_pre_modifier = None
 
-            self._loader.config_dict_interfold_json_attr = (
-                config.JSON2GRAPH_INTERFOLD_JSON_ATTR
-            )
-            self._loader.config_list_drop_reltypes = (
-                config.JSON2GRAPH_LIST_DROP_RELTYPES
-            )
+            self._loader.config_dict_interfold_json_attr = {
+                "Patent": {
+                    "bibliographic_data": {"combine_attr_names": False},
+                    "family": {"combine_attr_names": True},
+                },
+            }
+            self._loader.config_list_drop_reltypes = ["PATENT_HAS_PATENTFAMILY"]
 
-            self._loader.config_graphio_batch_size = config.COMMIT_INTERVAL
-            # self._loader.config_dict_create_merge_depending_scheme = None
-            self.config_dict_reltype_override = config.JSON2GRAPH_RELTYPE_OVERRIDE
+            self.config_dict_reltype_override = {}
         return self._loader
 
     @classmethod
@@ -103,23 +132,10 @@ class PatentLoader(object):
         cls(batch)
 
 
-def post_process():
-    for query in config.POST_PROCESS_QUERIES:
-        log.info("Run postprocess querie: '{}'".format(query))
-        try:
-            get_graph().run(query)
-        except py2neo.database.ClientError as e:
-            if not e.code == "Neo.ClientError.Schema.IndexAlreadyExists":
-                raise e
-            else:
-                pass
-
-
 def load_data():
     for d in os.listdir(config.DATASET_BASE_DIR):
         PatentLoader.load_dir(os.path.join(config.DATASET_BASE_DIR, d))
     log.info("Run Postprocess queries...")
-    post_process()
 
 
 if __name__ == "__main__":

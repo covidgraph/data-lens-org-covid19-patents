@@ -79,7 +79,7 @@ class PatentLoader(object):
             }
             self._loader.config_dict_property_name_override = {
                 "Entity": {"inventor": "name", "owner": "name", "applicant": "name"},
-                "LensID": {"lens_id": "id"},
+                "LensID": {"LensID": "id", "lens_id": "id"},
             }
             self._loader.config_list_default_primarykeys = [
                 "id",
@@ -90,7 +90,7 @@ class PatentLoader(object):
                 "Family": ["family_id"],
             }
             self._loader.config_dict_property_to_extra_node = {
-                "Patent": ["lens_id", "pub_key"],
+                "Patent": {"lens_id": "copy", "pub_key": "copy"},
                 "PatentLiteratureCitation": ["pub_key"],
             }
 

@@ -78,7 +78,7 @@ class PatentLoader(object):
                 "applicant": "Entity",
             }
             self._loader.config_dict_property_name_override = {
-                "Entity": {"inventor": "name", "owner": "name", "applicant": "name"},
+                "Entity": {"inventor": "name", "owner": "name", "applicant": "name", "Entity": "name"},
                 "LensID": {"LensID": "id", "lens_id": "id"},
             }
             self._loader.config_list_default_primarykeys = [
